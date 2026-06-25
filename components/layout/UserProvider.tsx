@@ -1,7 +1,6 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User } from "../../types";
 
 interface UserContextType {
   user: { name: string; teamId: number } | null;
@@ -22,19 +21,35 @@ export function UserProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem("typing-user");
-    if (stored) {
-      setUser(JSON.parse(stored));
-    }
-    setIsLoading(false);
+    fetch("/api/session")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.user) {
+          setUser(data.user);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   }, []);
 
-  const handleSetUser = (newUser: { name: string; teamId: number } | null) => {
-    setUser(newUser);
+  const handleSetUser = async (newUser: { name: string; teamId: number } | null) => {
     if (newUser) {
-      localStorage.setItem("typing-user", JSON.stringify(newUser));
+      try {
+        const res = await fetch("/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: newUser.name, teamId: newUser.teamId }),
+        });
+        const data = await res.json();
+        if (data.user) {
+          setUser({ name: data.user.name, teamId: data.user.team_id });
+        }
+      } catch {
+        setUser(newUser);
+      }
     } else {
-      localStorage.removeItem("typing-user");
+      await fetch("/api/session", { method: "DELETE" });
+      setUser(null);
     }
   };
 

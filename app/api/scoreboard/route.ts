@@ -16,19 +16,22 @@ export const GET = withRateLimit(async function (request: NextRequest) {
       return NextResponse.json({ error: "Invalid period" }, { status: 400 });
     }
 
-    let dateFilter = "";
-    if (period === "today") {
-      dateFilter = "AND a.created_at >= datetime('now', '-1 day')";
-    } else if (period === "week") {
-      dateFilter = "AND a.created_at >= datetime('now', '-7 days')";
-    } else if (period === "month") {
-      dateFilter = "AND a.created_at >= datetime('now', '-30 days')";
+    const periodMap: Record<string, string> = {
+      today: "-1 day",
+      week: "-7 days",
+      month: "-30 days",
+    };
+
+    const args: (string | number)[] = [];
+    let dateCondition = "";
+    if (period && periodMap[period]) {
+      dateCondition = "AND a.created_at >= datetime('now', ?)";
+      args.push(periodMap[period]);
     }
 
-    let teamFilter = "";
-    const args: (string | number)[] = [];
+    let teamCondition = "";
     if (teamId) {
-      teamFilter = "AND u.team_id = ?";
+      teamCondition = "AND u.team_id = ?";
       args.push(teamId);
     }
 
@@ -46,8 +49,8 @@ export const GET = withRateLimit(async function (request: NextRequest) {
             JOIN users u ON a.user_id = u.id
             JOIN teams t ON u.team_id = t.id
             WHERE a.completed = 1
-            ${dateFilter}
-            ${teamFilter}
+            ${dateCondition}
+            ${teamCondition}
             GROUP BY u.id, u.name, t.id, t.name
             ORDER BY best_wpm DESC`,
       args,

@@ -99,18 +99,10 @@ export default function ChallengePage() {
     if (!user || !challenge) return;
 
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: user.name, teamId: user.teamId }),
-      });
-      const { user: dbUser } = await res.json();
-
       await fetch("/api/attempts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: dbUser.id,
           challengeId: challenge.id,
           wpm,
           accuracy,

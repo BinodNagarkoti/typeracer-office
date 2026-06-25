@@ -27,10 +27,36 @@ export default function HomePage() {
   const { data: teams, isLoading: teamsLoading } = useTeams();
   const [name, setName] = useState("");
   const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
+  const [nameError, setNameError] = useState<string | null>(null);
 
-  const handleJoin = () => {
-    if (name.trim() && selectedTeam) {
-      setUser({ name: name.trim(), teamId: selectedTeam });
+  const validateName = (value: string): string | null => {
+    const sstiPatterns = [
+      /\{\{.*\}\}/,       // {{ }}
+      /\$\{.*\}/,         // ${ }
+      /%\{.*\}/,          // %{ }
+      /<%.*%>/,           // <%%>
+      /\{\%.*\%\}/,       // {% %}
+      /<!--[\s\S]*-->/,    // HTML comments
+      /javascript:/,       // javascript:
+      /on\w+\s*=/,         // onEvent=
+    ];
+    for (const pattern of sstiPatterns) {
+      if (pattern.test(value)) {
+        return "Invalid characters detected. Please enter a valid name.";
+      }
+    }
+    return null;
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setName(value);
+    setNameError(validateName(value));
+  };
+
+  const handleJoin = async () => {
+    if (name.trim() && selectedTeam && !nameError) {
+      await setUser({ name: name.trim(), teamId: selectedTeam });
       router.push("/challenges");
     }
   };
@@ -218,10 +244,15 @@ export default function HomePage() {
                   <input
                     type="text"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={handleNameChange}
                     placeholder="Enter your name"
-                    className="w-full px-4 py-2 border border-input rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-ring outline-none"
+                    className={`w-full px-4 py-2 border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring focus:border-ring outline-none ${
+                      nameError ? 'border-destructive' : 'border-input'
+                    }`}
                   />
+                  {nameError && (
+                    <p className="text-destructive text-sm mt-1">{nameError}</p>
+                  )}
                 </div>
 
                 <div>
@@ -252,7 +283,7 @@ export default function HomePage() {
                   className="w-full"
                   size="lg"
                   onClick={handleJoin}
-                  disabled={!name.trim() || !selectedTeam}
+                  disabled={!name.trim() || !selectedTeam || !!nameError}
                 >
                   Start Typing
                 </Button>

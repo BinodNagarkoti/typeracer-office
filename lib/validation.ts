@@ -3,14 +3,15 @@ import { z } from "zod";
 export const UserSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(1, "Name is required")
     .max(50, "Name must be 50 characters or less")
-    .regex(/^[a-zA-Z0-9\s._-]+$/, "Name contains invalid characters"),
+    .regex(/^[a-zA-Z0-9\s._-]+$/, "Name contains invalid characters")
+    .transform((val) => val.replace(/[<>"'&]/g, "")),
   teamId: z.number().int().positive("Team ID must be a positive integer"),
 });
 
 export const AttemptSchema = z.object({
-  userId: z.number().int().positive(),
   challengeId: z.number().int().positive(),
   wpm: z.number().min(0).max(300, "WPM cannot exceed 300"),
   accuracy: z.number().min(0).max(100, "Accuracy cannot exceed 100%"),

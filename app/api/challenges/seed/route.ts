@@ -1,11 +1,23 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { challenges } from "@/lib/challenges-data";
+import { withRateLimit } from "@/lib/rate-limit";
+import { timingSafeEqual } from "crypto";
 
-export async function POST(request: Request) {
+function safeCompare(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(Buffer.from(a), Buffer.from(b));
+}
+
+export const POST = withRateLimit(async function (request: Request) {
   try {
+    const adminSecret = process.env.ADMIN_SECRET;
+    if (!adminSecret) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
     const secret = request.headers.get("x-admin-secret");
-    if (!process.env.ADMIN_SECRET || secret !== process.env.ADMIN_SECRET) {
+    if (!secret || !safeCompare(secret, adminSecret)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -89,4 +101,4 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
-}
+});
