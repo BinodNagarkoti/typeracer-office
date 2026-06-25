@@ -20,6 +20,34 @@ const features = [
   { icon: Trophy, title: "Leaderboard", desc: "Compete with colleagues and prove your skills" },
 ];
 
+const faqItems = [
+  {
+    question: "What is TypeRacer Office?",
+    answer:
+      "TypeRacer Office is a free online typing speed test and competition platform designed for office teams. It lets you challenge colleagues, improve your WPM (words per minute), and climb the leaderboard with fun typing challenges.",
+  },
+  {
+    question: "How do I improve my typing speed?",
+    answer:
+      "Practice regularly with our speed challenges, focus on accuracy first, maintain proper finger placement on the keyboard, and gradually increase your typing pace. Our platform tracks your WPM and accuracy over time so you can see your progress.",
+  },
+  {
+    question: "What types of typing challenges are available?",
+    answer:
+      "We offer Speed challenges, Accuracy tests, Office Jargon practice, Email typing, Code typing, and Timed rounds. Each challenge type targets different aspects of your typing skills.",
+  },
+  {
+    question: "Is TypeRacer Office free to use?",
+    answer:
+      "Yes, TypeRacer Office is completely free. Sign up with your name, pick a team, and start competing with your colleagues immediately.",
+  },
+  {
+    question: "Can I track my typing progress over time?",
+    answer:
+      "Absolutely. The leaderboard shows your rankings by day, week, month, and all-time. Your WPM and accuracy scores are recorded after every challenge so you can track your improvement.",
+  },
+];
+
 export default function HomePage() {
   const router = useRouter();
   const { user, setUser } = useUserContext();
@@ -292,6 +320,54 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 sm:py-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-10">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-6">
+            {faqItems.map((faq, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.05 * i }}
+              >
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold text-foreground mb-2">
+                      {faq.question}
+                    </h3>
+                    <p className="text-muted-foreground">{faq.answer}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqItems.map((faq) => ({
+              "@type": "Question",
+              name: faq.question,
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: faq.answer,
+              },
+            })),
+          }),
+        }}
+      />
     </div>
   );
 }
