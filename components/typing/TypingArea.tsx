@@ -59,7 +59,7 @@ export function TypingArea({
         return;
       }
 
-      if (key.length === 1) {
+      if (key.length === 1 || key === "Enter") {
         e.preventDefault();
 
         if (currentIndex === 0) {
@@ -68,7 +68,11 @@ export function TypingArea({
         }
 
         const expected = targetText[currentIndex];
-        const isCorrect = key === expected;
+        let typedChar = key;
+        if (expected === "\n" && (key === " " || key === "Enter")) {
+          typedChar = "\n";
+        }
+        const isCorrect = typedChar === expected;
 
         if (!isCorrect) {
           const count = (wrongCounts.current.get(expected) || 0) + 1;
@@ -80,7 +84,7 @@ export function TypingArea({
           }
         }
 
-        onKeyPress(key);
+        onKeyPress(typedChar);
       }
     },
     [disabled, paused, onResume, targetText, currentIndex, onKeyPress, onBackspace, hintKey]
@@ -154,7 +158,7 @@ export function TypingArea({
           >
             <span className="font-semibold">Hint:</span>
             <span>
-              Press <kbd className="px-1.5 py-0.5 rounded bg-[var(--warning)]/20 font-mono font-bold">{`"${hintKey}"`}</kbd>
+              Press <kbd className="px-1.5 py-0.5 rounded bg-[var(--warning)]/20 font-mono font-bold">{hintKey === "\n" ? "Space" : `"${hintKey}"`}</kbd>
             </span>
           </motion.div>
         )}

@@ -5,11 +5,15 @@ import { Zap, Target } from "lucide-react";
 interface StatsBarProps {
   wpm: number;
   accuracy: number;
+  isPaused?: boolean;
 }
 
-export function StatsBar({ wpm, accuracy }: StatsBarProps) {
+export function StatsBar({ wpm, accuracy, isPaused }: StatsBarProps) {
   return (
-    <div className="flex items-center gap-6">
+    <div
+      className="flex items-center gap-6 transition-opacity duration-300"
+      style={{ opacity: isPaused ? 0.35 : 1, filter: isPaused ? "grayscale(1)" : "none" }}
+    >
       <div className="flex items-center gap-2">
         <Zap className="w-5 h-5 text-[var(--warning)]" />
         <div>

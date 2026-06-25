@@ -8,9 +8,10 @@ interface TimerProps {
   timeElapsed: number;
   countdown: number | null;
   timeLimit?: number | null;
+  isPaused?: boolean;
 }
 
-export function Timer({ timeElapsed, countdown, timeLimit }: TimerProps) {
+export function Timer({ timeElapsed, countdown, timeLimit, isPaused }: TimerProps) {
   const displayTime =
     countdown !== null
       ? formatTime(countdown)
@@ -23,7 +24,10 @@ export function Timer({ timeElapsed, countdown, timeLimit }: TimerProps) {
       : null;
 
   return (
-    <div className="flex items-center gap-2">
+    <div
+      className="flex items-center gap-2 transition-opacity duration-300"
+      style={{ opacity: isPaused ? 0.35 : 1, filter: isPaused ? "grayscale(1)" : "none" }}
+    >
       <Clock
         className={`w-5 h-5 ${isLow ? "text-[var(--destructive)]" : "text-[var(--muted-foreground)]"}`}
       />

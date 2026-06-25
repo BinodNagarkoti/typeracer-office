@@ -49,7 +49,7 @@ export default function ScoreboardPage() {
           transition={{ delay: 0.1 }}
           className="bg-card rounded-2xl shadow-sm border border-border p-6"
         >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row  items-start sm:items-center justify-between gap-4 mb-6">
             {teams && (
               <TeamFilter
                 teams={teams}
@@ -58,7 +58,7 @@ export default function ScoreboardPage() {
               />
             )}
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-start">
               <Calendar className="w-4 h-4 text-muted-foreground" />
               <div className="flex gap-1">
                 {periods.map((period) => (
@@ -66,6 +66,7 @@ export default function ScoreboardPage() {
                     key={period.value}
                     variant={selectedPeriod === period.value ? "primary" : "ghost"}
                     size="sm"
+                    className="whitespace-nowrap"
                     onClick={() => setSelectedPeriod(period.value)}
                   >
                     {period.label}

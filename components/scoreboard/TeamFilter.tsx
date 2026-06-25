@@ -20,6 +20,7 @@ export function TeamFilter({
         variant={selectedTeamId === null ? "primary" : "secondary"}
         size="sm"
         onClick={() => onSelect(null)}
+        className="whitespace-nowrap"
       >
         All Teams
       </Button>
@@ -29,6 +30,7 @@ export function TeamFilter({
           variant={selectedTeamId === team.id ? "primary" : "secondary"}
           size="sm"
           onClick={() => onSelect(team.id)}
+          className="whitespace-nowrap"
         >
           {team.name}
         </Button>

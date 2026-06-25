@@ -8,6 +8,7 @@ import { TypingArea } from "../../../components/typing/TypingArea";
 import { Timer } from "../../../components/typing/Timer";
 import { StatsBar } from "../../../components/typing/StatsBar";
 import { ResultModal } from "../../../components/typing/ResultModal";
+import { RaceTrack } from "../../../components/typing/RaceTrack";
 import { Button } from "../../../components/ui/button";
 import { useTypingGame } from "../../../hooks/useTypingGame";
 import { useTimer } from "../../../hooks/useTimer";
@@ -196,12 +197,20 @@ export default function ChallengePage() {
           transition={{ delay: 0.1 }}
           className="bg-card rounded-2xl shadow-sm border border-border p-6 mb-6"
         >
-          <div className="flex items-center justify-between mb-6">
-            <StatsBar wpm={wpm} accuracy={accuracy} />
+          <RaceTrack
+            wpm={wpm}
+            accuracy={accuracy}
+            isPlaying={status === "active"}
+            isPaused={isPaused}
+          />
+
+          <div className="flex items-center justify-between mt-6 mb-6">
+            <StatsBar wpm={wpm} accuracy={accuracy} isPaused={isPaused} />
             <Timer
               timeElapsed={timeElapsed}
               countdown={countdown}
               timeLimit={challenge.time_limit}
+              isPaused={isPaused}
             />
           </div>
 

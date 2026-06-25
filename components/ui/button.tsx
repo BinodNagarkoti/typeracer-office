@@ -18,11 +18,11 @@ export function Button({
       className={cn(
         "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
         {
-          "bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--primary)]/90 focus-visible:ring-[var(--ring)]":
+          "bg-primary text-primary-foreground hover:bg-primary/90 focus-visible:ring-ring":
             variant === "primary",
-          "bg-[var(--secondary)] text-[var(--secondary-foreground)] hover:bg-[var(--accent)] focus-visible:ring-[var(--ring)]":
+          "bg-secondary text-secondary-foreground hover:bg-accent focus-visible:ring-ring":
             variant === "secondary",
-          "text-[var(--muted-foreground)] hover:text-[var(--foreground)] hover:bg-[var(--accent)]":
+          "text-muted-foreground hover:text-foreground hover:bg-accent":
             variant === "ghost",
         },
         {
